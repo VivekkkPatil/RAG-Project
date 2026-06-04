@@ -1,6 +1,6 @@
 from backend.pipeline.rag_pipeline import query_documents
 from backend.intelligence.authenticator import call_llm
-from backend.intelligence.prompt_manager import get_rag_prompt, get_explanation_prompt
+from backend.intelligence.prompt_manager import get_explanation_prompt
 
 def chat(question: str, history: list = [], mode: str = "default") -> dict:
     context_chunks = query_documents(question)

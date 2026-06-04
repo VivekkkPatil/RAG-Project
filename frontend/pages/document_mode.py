@@ -17,16 +17,26 @@ def show():
         text = st.text_area("Paste text to evaluate")
         if st.button("Evaluate") and text:
             with st.spinner("Evaluating..."):
-                res = requests.post(f"{API}/eval/evaluate", json={"text": text})
-                data = res.json()
-            st.markdown("**Summary:**")
-            st.write(data["summary"])
-            show_risk(data["risk_score"])
-            st.markdown("**Domain:** " + data["domain"])
-            with st.expander("📋 Actions"):
-                st.write(data["actions"])
-            with st.expander("❓ FAQs"):
-                st.write(data["faqs"])
+                try:
+                    res = requests.post(
+                        f"{API}/eval/evaluate",
+                        json={"text": text},
+                        timeout=60
+                    )
+                    if res.status_code == 200:
+                        data = res.json()
+                        st.markdown("**Summary:**")
+                        st.write(data["summary"])
+                        show_risk(data["risk_score"])
+                        st.markdown("**Domain:** " + data["domain"])
+                        with st.expander("📋 Actions"):
+                            st.write(data["actions"])
+                        with st.expander("❓ FAQs"):
+                            st.write(data["faqs"])
+                    else:
+                        st.error(f"Error {res.status_code}: {res.text}")
+                except Exception as e:
+                    st.error(f"Evaluate failed: {str(e)}")
 
     with col2:
         st.subheader("💬 Ask your Document")

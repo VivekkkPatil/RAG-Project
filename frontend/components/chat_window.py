@@ -3,6 +3,10 @@ import requests
 
 API = "http://127.0.0.1:8000"
 
+voice_text = st.session_state.pop("voice_input", None)
+st.write(f"DEBUG voice_text: {voice_text}")  # temporary debug
+user_input = st.chat_input("Ask something...")
+
 def show_chat(endpoint: str = "/rag/query", payload_key: str = "question", show_modes: bool = False):
     if "messages" not in st.session_state:
         st.session_state.messages = []
@@ -24,7 +28,12 @@ def show_chat(endpoint: str = "/rag/query", payload_key: str = "question", show_
         with st.chat_message(msg["role"]):
             st.write(msg["content"])
 
+    voice_text = st.session_state.pop("voice_input", None)
     user_input = st.chat_input("Ask something...")
+
+    if voice_text and not user_input:
+        user_input = voice_text
+
     if user_input:
         history = []
         msgs = st.session_state.messages
@@ -47,7 +56,7 @@ def show_chat(endpoint: str = "/rag/query", payload_key: str = "question", show_
             with st.spinner("Thinking..."):
                 try:
                     payload = {payload_key: user_input, "history": history, "mode": mode}
-                    res = requests.post(f"{API}{endpoint}", json=payload, timeout=30)
+                    res = requests.post(f"{API}{endpoint}", json=payload, timeout=60)
                     data = res.json()
                     answer = data.get("answer") or data.get("response") or "No response"
                 except Exception as e:
