@@ -12,3 +12,9 @@ async def upload_document(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, f)
     chunks = ingest_document(file_path)
     return {"filename": file.filename, "chunks_ingested": chunks}
+
+@router.post("/clear")
+def clear_documents():
+    from backend.pipeline.vector_store import clear_all
+    clear_all()
+    return {"status": "cleared"}

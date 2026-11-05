@@ -25,6 +25,11 @@ def evaluate(request: EvalRequest):
         "faqs": generate_faqs(request.text)
     }
 
+@router.post("/authenticity")
+def authenticity(request: EvalRequest):
+    from backend.intelligence.authenticity_checker import check_authenticity
+    return check_authenticity(request.text)
+
 @router.post("/rag-evaluate")
 def rag_evaluate(request: RAGEvalRequest):
     from backend.evaluation.ragas_eval import run_evaluation

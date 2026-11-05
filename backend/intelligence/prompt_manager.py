@@ -62,3 +62,31 @@ Context:
 Question: {question}
 
 Answer:"""
+
+def get_confidence_prompt(question: str, answer: str, context: str) -> str:
+    return f"""Rate how confident you are in this answer based on the context provided.
+Reply with just a number from 1-10.
+10 = answer is fully supported by context
+1 = answer is mostly guessed
+
+Question: {question}
+Answer: {answer}
+Context: {context[:500]}
+
+Confidence score:"""
+
+def get_authenticity_prompt(text: str) -> str:
+    return f"""Analyze this document for internal contradictions, inconsistencies, or suspicious patterns.
+Look for:
+- Contradicting statements
+- Inconsistent dates, numbers, or names
+- Unusual clauses or hidden conditions
+- Signs of tampering or manipulation
+
+Document:
+{text[:2000]}
+
+Respond in this format:
+Authenticity Score: X/10 (10 = fully authentic)
+Issues Found: (list any problems or "None found")
+Verdict: (Authentic / Suspicious / Likely Tampered)"""
