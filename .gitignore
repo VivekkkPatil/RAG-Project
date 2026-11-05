@@ -7,3 +7,12 @@ __pycache__/
 *.pyc
 .vscode/
 *.log
+
+# Private uploaded documents
+data/uploads/
+
+# Generated vector databases
+data/chroma_db/
+
+# Local data
+data/
